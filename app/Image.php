@@ -10,4 +10,8 @@ class Image extends Model
         'image_name',
         'image_path',
     ];
+    public function type()
+    {
+        return $this->belongsTo('App\Type', 'type_id', 'id');
+    }
 }

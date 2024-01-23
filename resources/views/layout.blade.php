@@ -35,7 +35,9 @@
                 });
             </script>
             @else
-
+            <a class="btn btn-link" href="{{ route('login') }}">
+                {{ __('ログイン') }}
+            </a>
             @endif
         </div>
     </nav>

@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\RegistrationController;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +19,9 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes(['verify' => true]);
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth',]], function () {
 
     Route::get('/', [DisplayController::class, 'index']);
 
@@ -29,6 +31,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/create_creature', [RegistrationController::class, 'createCreatureForm'])->name('create.creature');
     Route::post('/create_creature', [RegistrationController::class, 'createCreature']);
 
-    Route::get('/users/edit', 'UserController@edit2');
-    Route::post('/users/edit', 'UserController@update');
+    Route::group(['middleware' => 'can:view,creature'], function () {
+        Route::get('/edit_form/{creature}', [RegistrationController::class, 'editCreatureForm'])->name('edit.creature');
+        Route::post('/edit_form/{creature}', [RegistrationController::class, 'editCreature']);
+
+        Route::get('/delete_creature/{creature}', [RegistrationController::class, 'deleteCreature'])->name('delete.creature');
+    });
 });

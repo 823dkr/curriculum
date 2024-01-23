@@ -20,10 +20,12 @@ class DisplayController extends Controller
         $all = $creatures->all();
         $all2 = $types->all();
         $all3 = $image->all();
+
         return view('top', [
             'creatures' => $all,
             'types' => $all2,
             'images' => $all3
+
         ]);
     }
 }
