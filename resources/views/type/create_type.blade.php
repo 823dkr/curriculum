@@ -2,7 +2,7 @@
 @section('content')
 <div class="text-center" style="padding:50px 0">
     <div class="logo">カテゴリ追加</div>
-    <form action="{{route('create.type')}}" method=post id="login-form" class="text-left">
+    <form action='/types' method=post id="login-form" class="text-left">
         @csrf
         <div class="login-form-main-message"></div>
         <div class="main-login-form">

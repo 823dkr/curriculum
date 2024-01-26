@@ -13,38 +13,51 @@ use App\Http\Requests\CreateData;
 use App\Image;
 use App\Sex;
 
-class RegistrationController extends Controller
+class MainController extends Controller
 {
-    public function createTypeForm()
+    public function index()
     {
-        return view('create_type_form');
+        $creatures = Auth::user()->creature()->get();
+        $types = Auth::user()->type()->get();
+        $images = Auth::user()->image()->get();
+        $sexes = new Sex;
+
+        $all_creature = $creatures->all();
+        $all_types = $types->all();
+        $all_sexes = $sexes->all();
+        // $image_path = $images->path;
+
+        return view('creature.index', [
+            'creatures' => $all_creature,
+            'types' => $all_types,
+            //'image' => $image_path,
+            'sexes' => $all_sexes,
+            'all_types' => $all_types,
+
+        ]);
     }
-    public function createType(Request $request)
+
+    public function create()
     {
-        $type = new Type;
-
-        $type->name = $request->name;
-        Auth::user()->type()->save($type);
-
-        return redirect('create_creature_form');
-    }
-
-    public function createCreatureForm(Sex $sex)
-    {
+        $sex = new Sex;
         $sexes = $sex->get();
         $types = Auth::user()->type()->get();
+
         if ($types->isEmpty()) {
             return view('create_type_form');
         } else {
-            return view('create_creature_form', [
+            return view('creature.create', [
                 'types' => $types,
                 'sexes' => $sexes,
             ]);
         }
     }
 
-    public function createCreature(Creature $creature, Image $image, CreateData $request)
+    public function store(Request $request)
     {
+        $creature = new Creature;
+        $image = new Image;
+
         if (null != ($request->file('image'))) {
             // アップロードされたファイル名を取得
             $file_name = $request->file('image')->getClientOriginalName();
@@ -55,7 +68,7 @@ class RegistrationController extends Controller
             $image->name = $file_name;
             $image->path = 'storage/' . $file_name;
             $image->type_id = $request->type_id;
-            //$image->creature_id = $creature->id;
+            $image->creature_id = $creature->id;
 
             Auth::user()->image()->save($image);
 
@@ -67,7 +80,7 @@ class RegistrationController extends Controller
             }
             Auth::user()->creature()->save($creature);
 
-            return redirect('/');
+            return redirect('/creatures');
         } else {
             $columns = ['type_id', 'name', 'sex_id',];
             foreach ($columns as $column) {
@@ -75,24 +88,45 @@ class RegistrationController extends Controller
             }
             Auth::user()->creature()->save($creature);
 
-            return redirect('/');
+            return redirect('/creatures');
         }
     }
 
-    public function editCreatureForm(Creature $creature, Sex $sex)
+    public function show(Creature $creature)
     {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Creature  $creature
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Creature $creature)
+    {
+        $sex = new Sex;
         $sexes = $sex->get();
         $types = Auth::user()->type()->get();
-        return view('edit_creature_form', [
-            'id' => $creature,
+
+        return view('creature.edit', [
+            'id' => $creature->id,
             'types' => $types,
             'result' => $creature,
             'sexes' => $sexes,
         ]);
     }
 
-    public function editCreature(Creature $creature, Image $image, CreateData $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Creature  $creature
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Creature $creature)
     {
+        $image = new Image;
         if (null != ($request->file('image'))) {
             // アップロードされたファイル名を取得
             $file_name = $request->file('image')->getClientOriginalName();
@@ -113,7 +147,7 @@ class RegistrationController extends Controller
 
             Auth::user()->creature()->save($creature);
 
-            return redirect('/');
+            return redirect('/creatures');
         } else {
             $columns = ['type_id', 'name', 'sex_id',];
             foreach ($columns as $column) {
@@ -122,14 +156,21 @@ class RegistrationController extends Controller
 
             Auth::user()->creature()->save($creature);
 
-            return redirect('/');
+            return redirect('/creatures');
         }
     }
 
-    public function deleteCreature(Creature $creature)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Creature  $creature
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Creature $creature)
     {
-        $creature->delete();
+        $id = $creature->id;
+        $creature->where('id', $id)->delete();
 
-        return redirect('/');
+        return redirect('/creatures');
     }
 }

@@ -49,6 +49,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function image()
     {
-        return $this->hasMany('App\Creature');
+        return $this->hasMany('App\Image');
+    }
+
+    public function feed()
+    {
+        return $this->hasMany('App\Feed');
     }
 }

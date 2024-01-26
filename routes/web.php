@@ -22,19 +22,7 @@ Auth::routes();
 Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => ['auth',]], function () {
-
-    Route::get('/', [DisplayController::class, 'index']);
-
-    Route::get('/create_type', [RegistrationController::class, 'createTypeForm'])->name('create.type');
-    Route::post('/create_type', [RegistrationController::class, 'createType']);
-
-    Route::get('/create_creature', [RegistrationController::class, 'createCreatureForm'])->name('create.creature');
-    Route::post('/create_creature', [RegistrationController::class, 'createCreature']);
-
-    Route::group(['middleware' => 'can:view,creature'], function () {
-        Route::get('/edit_form/{creature}', [RegistrationController::class, 'editCreatureForm'])->name('edit.creature');
-        Route::post('/edit_form/{creature}', [RegistrationController::class, 'editCreature']);
-
-        Route::get('/delete_creature/{creature}', [RegistrationController::class, 'deleteCreature'])->name('delete.creature');
-    });
+    Route::resource('types', 'TypeController', ['only' => ['create', 'store',]]);
+    Route::resource('creatures', 'MainController', ['except' => ['show']]);
+    Route::resource('searches', 'SearchController', ['only' => ['index',]]);
 });

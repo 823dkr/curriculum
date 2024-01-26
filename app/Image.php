@@ -12,6 +12,10 @@ class Image extends Model
     ];
     public function type()
     {
-        return $this->belongsTo('App\Type', 'type_id', 'id');
+        return $this->belongsTo('App\Type');
+    }
+    public function creature()
+    {
+        return $this->hasOne('App\Creature');
     }
 }

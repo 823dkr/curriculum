@@ -13,37 +13,66 @@ use App\Http\Requests\CreateData;
 use App\Image;
 use App\Sex;
 
-class RegistrationController extends Controller
+class CreatureController extends Controller
 {
-    public function createTypeForm()
+    public function __construct()
     {
-        return view('create_type_form');
-    }
-    public function createType(Request $request)
-    {
-        $type = new Type;
-
-        $type->name = $request->name;
-        Auth::user()->type()->save($type);
-
-        return redirect('create_creature_form');
+        $this->middleware('auth',);
     }
 
-    public function createCreatureForm(Sex $sex)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
+        $creatures = Auth::user()->creature()->get();
+        $types = Auth::user()->type()->get();
+        $images = Auth::user()->image()->get();
+        $sexes = new Sex;
+
+        $all_creature = $creatures->all();
+        $all_types = $types->all();
+        $all_images = $images->all();
+        $all_sexes = $sexes->all();
+        return view('creature.index', [
+            'creatures' => $all_creature,
+            'types' => $all_types,
+            'images' => $all_images,
+            'sexes' => $all_sexes,
+            'all_types' => $all_types,
+
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $sex = new Sex;
         $sexes = $sex->get();
         $types = Auth::user()->type()->get();
         if ($types->isEmpty()) {
             return view('create_type_form');
         } else {
-            return view('create_creature_form', [
+            return view('creature.create', [
                 'types' => $types,
                 'sexes' => $sexes,
             ]);
         }
     }
 
-    public function createCreature(Creature $creature, Image $image, CreateData $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Creature $creature, Image $image, CreateData $request)
     {
         if (null != ($request->file('image'))) {
             // アップロードされたファイル名を取得
@@ -79,19 +108,45 @@ class RegistrationController extends Controller
         }
     }
 
-    public function editCreatureForm(Creature $creature, Sex $sex)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Creature $creature)
+    {
+        $sex = new Sex;
         $sexes = $sex->get();
         $types = Auth::user()->type()->get();
-        return view('edit_creature_form', [
-            'id' => $creature,
+
+        return view('creature.edit', [
+            'id' => $creature->id,
             'types' => $types,
             'result' => $creature,
             'sexes' => $sexes,
         ]);
     }
 
-    public function editCreature(Creature $creature, Image $image, CreateData $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Creature $creature, Image $image, CreateData $request, $id)
     {
         if (null != ($request->file('image'))) {
             // アップロードされたファイル名を取得
@@ -126,9 +181,16 @@ class RegistrationController extends Controller
         }
     }
 
-    public function deleteCreature(Creature $creature)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Creature $creature, $id)
     {
-        $creature->delete();
+        $id = $creature->id;
+        $creature->where('id', $id)->delete();
 
         return redirect('/');
     }
