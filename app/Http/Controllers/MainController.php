@@ -12,6 +12,7 @@ use App\Creature;
 use App\Http\Requests\CreateData;
 use App\Image;
 use App\Sex;
+use App\Feed;
 
 class MainController extends Controller
 {
@@ -44,7 +45,7 @@ class MainController extends Controller
         $types = Auth::user()->type()->get();
 
         if ($types->isEmpty()) {
-            return view('create_type_form');
+            return view('type.create_type');
         } else {
             return view('creature.create', [
                 'types' => $types,

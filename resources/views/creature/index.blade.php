@@ -2,30 +2,29 @@
 @section('content')
 <main>
     <a class="btn btn-primary" href="/creatures/create" role="button">生体新規登録</a>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <div class='text-center'>生体検索</div>
-            </div>
-            <div class="card-body">
-                <form action='/searches' method="get">
-                    @csrf
-                    <select name='type_id' class="form-control">
-                        <option value="" hidden>カテゴリ選択</option>
-                        @foreach($all_types as $all_type)
-                        <option value="{{ $all_type['id']}}">{{ $all_type['name'] }}</option>
-                        @endforeach
-                    </select>
-                    <select name='sex_id' class="form-control">
-                        <option value="" hidden>雌雄選択</option>
-                        @foreach($sexes as $sex)
-                        <option value="{{$sex['id']}}">{{$sex['name']}}</option>
-                        @endforeach
-                    </select>
-                    <button type="submit" class="btn btn-primary">検索</button>
-                </form>
-            </div>
-        </div>
+
+    <div class="card-header">
+        <div class='text-center'>生体検索</div>
+    </div>
+    <div class="card-body">
+        <form action='/searches' method="get">
+            @csrf
+            <select name='type_id' class="form-control">
+                <option value="" hidden>カテゴリ選択</option>
+                @foreach($all_types as $all_type)
+                <option value="{{ $all_type['id']}}">{{ $all_type['name'] }}</option>
+                @endforeach
+            </select>
+            <select name='sex_id' class="form-control">
+                <option value="" hidden>雌雄選択</option>
+                @foreach($sexes as $sex)
+                <option value="{{$sex['id']}}">{{$sex['name']}}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary">検索</button>
+        </form>
+    </div>
+    </div>
     </div>
 
     @foreach($types as $type)
@@ -43,6 +42,7 @@
                     <th scope="col">性別</th>
                     <th scope="col">編集</th>
                     <th scope="col">削除</th>
+                    <th scope="col">給餌</th>
                 </tr>
             </thead>
             @foreach($creatures as $creature)
@@ -70,7 +70,18 @@
                             <button class='btn btn-danger' onclick="return confirm('{{$creature->name}}を削除してよろしいですか?')">削除</button>
                         </form>
                     </td>
+                    <td>
+                        @if(!$creature->isFeedBy(Auth::user()))
+                        <span class="feeds">
+                            <i class="fa-solid fa-utensils feed-toggle" data-creature-id="{{ $creature->id }}"> お腹空いた...</i>
 
+                        </span>
+                        @else
+                        <span class="feeds">
+                            <i class="fa-solid fa-utensils feed-toggle feeded" data-creature-id="{{ $creature->id }}"> ごちそうさま！！</i>
+                        </span>
+                        @endif​
+                    </td>
                 </tr>
                 @else
                 @endif
@@ -78,5 +89,7 @@
             @endforeach
         </table>
     </div>
+    <br><br><br>
     @endforeach
+
     @endsection

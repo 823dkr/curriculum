@@ -21,8 +21,20 @@ use Illuminate\Http\Request;
 Auth::routes();
 Auth::routes(['verify' => true]);
 
+//管理ユーザー
+Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
+Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
+
+Route::post('/login/admin', 'Auth\LoginController@adminLogin');
+Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
+
+Route::view('/admin', 'auth.admin')->middleware('auth:admin')->name('admin-home');
+
+//一般ユーザー
 Route::group(['middleware' => ['auth',]], function () {
     Route::resource('types', 'TypeController', ['only' => ['create', 'store',]]);
     Route::resource('creatures', 'MainController', ['except' => ['show']]);
     Route::resource('searches', 'SearchController', ['only' => ['index',]]);
+
+    Route::post('/feed', 'FeedController@feed')->name('creatures.feed');
 });

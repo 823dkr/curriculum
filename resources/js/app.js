@@ -31,4 +31,4 @@ const app = new Vue({
     el: '#app',
 });
 
-require('./ajaxlike.js')
+require('./ajaxfeed.js')
