@@ -14,8 +14,8 @@
     </div>
     <form action="/creatures" method="post" enctype='multipart/form-data'>
         @csrf
-        <input type="hidden" name='id'>
         <div class="form-group">
+            <div class="card-header">画像選択</div>
             <input type="file" name="image">
         </div>
         <div class="form-group">
@@ -41,7 +41,7 @@
         <div class=" form-group">
             <label class="sr-only">性別</label>
             <select name='sex_id' class="form-control">
-                <option value="" hidden>雌雄選択</option>
+                <option value="" hidden>性別選択</option>
                 @foreach($sexes as $sex)
                 <option value="{{$sex['id']}}">{{$sex['name']}}</option>
                 @endforeach

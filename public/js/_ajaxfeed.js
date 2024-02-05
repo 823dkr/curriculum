@@ -1,13 +1,13 @@
 $(function () {
 var feed = $('.feed-toggle');
 var feedCreatureId;
-
-feed.on('click', function () {
+var text =$('.feed-toggle').text();
+//console.log('test');
+    feed.on('click', function () {
     var $this = $(this);
-    feedCreatureId = $this.data('creatureid');
-    let $this =$(this);
-    feedCreatureId=$this.data('creature-id');
-    $.ajax({
+    feedCreatureId = $this.data('creature-id');
+
+        $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -16,13 +16,14 @@ feed.on('click', function () {
             data: {
                 'creature_id': feedCreatureId //コントローラーに渡すパラメーター
             },
-    })
+        })
 
         // Ajaxリクエストが成功した場合
         .done(function (data) {
-        //lovedクラスを追加
+        //feededクラスを追加
             $this.toggleClass('feeded'); 
         })
+
         // Ajaxリクエストが失敗した場合
         .fail(function (data, xhr, err) {
 
@@ -32,5 +33,7 @@ feed.on('click', function () {
             console.log(err);
             console.log(xhr);
         });
-});
+
+        return false;
+    });
 });

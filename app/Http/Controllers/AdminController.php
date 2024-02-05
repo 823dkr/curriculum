@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\RequestsCreateData;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-use App\Type;
-use App\Creature;
-use App\Http\Requests\CreateData;
-use App\Image;
-use App\Sex;
-
-class TypeController extends Controller
+class AdminController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -23,6 +14,13 @@ class TypeController extends Controller
      */
     public function index()
     {
+        $user = new User;
+        $all_user = $user->all();
+        $user_list = User::where('del_flg', 0)->orderBy('id', 'asc')->paginate(20);
+        return view('auth.admin', [
+            'users' => $user_list,
+            'authuser' => 'admin',
+        ]);
     }
 
     /**
@@ -32,7 +30,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('type.create_type');
+        //
     }
 
     /**
@@ -43,24 +41,16 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required'],
-        ]);
-        $type = new Type;
-
-        $type->name = $request->name;
-        Auth::user()->type()->save($type);
-
-        return redirect('/creatures/create');
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
         //
     }
@@ -68,10 +58,10 @@ class TypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
         //
     }
@@ -80,10 +70,10 @@ class TypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -91,11 +81,14 @@ class TypeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $id = $user->id;
+        $user->where('id', $id)->delete();
+
+        return redirect('/admin');
     }
 }

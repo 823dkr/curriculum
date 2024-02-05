@@ -1,11 +1,24 @@
 @extends('layout')
 @section('content')
 <main>
+    <div class='panel-body'>
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $message)
+                <li>{{ $message }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+    </div>
     <form action="/creatures/{{$id}}" method="post" enctype='multipart/form-data'>
         @csrf
         @method('PUT')
-        <input type="file" name="image">
-
+        <div class="form-group">
+            <div class="card-header">画像選択</div>
+            <input type="file" name="image">
+        </div>
         <div class="form-group">
             <label class="sr-only">カテゴリ名</label>
             <select name='type_id' class="form-control">
@@ -28,7 +41,7 @@
         <div class="form-group">
             <label class="sr-only">性別</label>
             <select name='sex_id' class="form-control">
-                <option value="" hidden>雌雄選択</option>
+                <option value="" hidden>性別選択</option>
                 @foreach($sexes as $sex)
                 @if($sex['id']==$result['sex_id'])
                 <option value="{{ $sex['id']}}" selected>{{ $sex['name'] }}</option>

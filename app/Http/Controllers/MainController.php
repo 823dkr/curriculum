@@ -13,6 +13,8 @@ use App\Http\Requests\CreateData;
 use App\Image;
 use App\Sex;
 use App\Feed;
+use Carbon\Carbon;
+
 
 class MainController extends Controller
 {
@@ -22,19 +24,22 @@ class MainController extends Controller
         $types = Auth::user()->type()->get();
         $images = Auth::user()->image()->get();
         $sexes = new Sex;
+        $today = Carbon::today();
+        $user_id = Auth::user()->id;
 
         $all_creature = $creatures->all();
         $all_types = $types->all();
         $all_sexes = $sexes->all();
-        // $image_path = $images->path;
+        $all_images = $images->all();
+        $feed = Feed::where('user_id', $user_id)->whereDate('created_at', $today)->get();
 
         return view('creature.index', [
             'creatures' => $all_creature,
             'types' => $all_types,
-            //'image' => $image_path,
+            'images' => $all_images,
             'sexes' => $all_sexes,
             'all_types' => $all_types,
-
+            'feed' => $feed,
         ]);
     }
 
@@ -54,32 +59,36 @@ class MainController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(CreateData $request)
     {
+        $request->validate([
+            'image' => ['file', 'mimes:jpeg,png,jpg,bmb', 'max:2048', 'image'],
+
+        ]);
         $creature = new Creature;
         $image = new Image;
 
         if (null != ($request->file('image'))) {
-            // アップロードされたファイル名を取得
-            $file_name = $request->file('image')->getClientOriginalName();
-
-            // 取得したファイル名で保存
-            $request->file('image')->storeAs('public', $file_name);
-
-            $image->name = $file_name;
-            $image->path = 'storage/' . $file_name;
-            $image->type_id = $request->type_id;
-            $image->creature_id = $creature->id;
-
-            Auth::user()->image()->save($image);
-
-
 
             $columns = ['type_id', 'name', 'sex_id',];
             foreach ($columns as $column) {
                 $creature->$column = $request->$column;
             }
             Auth::user()->creature()->save($creature);
+
+            // アップロードされたファイル名を取得
+            $file_name = $request->file('image')->getClientOriginalName();
+
+            // 取得したファイル名で保存
+            $request->file('image')->storeAs('public', $file_name);
+
+
+            $image->name = $file_name;
+            $image->path = 'storage/' . $file_name;
+            $image->creature_id = $creature->id;
+
+            Auth::user()->image()->save($image);
+
 
             return redirect('/creatures');
         } else {
@@ -125,10 +134,22 @@ class MainController extends Controller
      * @param  \App\Creature  $creature
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Creature $creature)
+    public function update(CreateData $request, Creature $creature)
     {
+        $request->validate([
+            'image' => ['file', 'mimes:jpeg,png,jpg,bmb', 'max:2048', 'image'],
+
+        ]);
+
         $image = new Image;
         if (null != ($request->file('image'))) {
+            $columns = ['type_id', 'name', 'sex_id',];
+            foreach ($columns as $column) {
+                $creature->$column = $request->$column;
+            }
+
+            Auth::user()->creature()->save($creature);
+
             // アップロードされたファイル名を取得
             $file_name = $request->file('image')->getClientOriginalName();
 
@@ -137,17 +158,12 @@ class MainController extends Controller
 
             $image->name = $file_name;
             $image->path = 'storage/' . $file_name;
-            $image->type_id = $request->type_id;
+            $image->creature_id = $creature->id;
+
+            $id = $creature->id;
+            $image->where('creature_id', $id)->delete();
 
             Auth::user()->image()->save($image);
-
-            $columns = ['type_id', 'name', 'sex_id',];
-            foreach ($columns as $column) {
-                $creature->$column = $request->$column;
-            }
-
-            Auth::user()->creature()->save($creature);
-
             return redirect('/creatures');
         } else {
             $columns = ['type_id', 'name', 'sex_id',];

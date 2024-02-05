@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -58,5 +59,14 @@ class LoginController extends Controller
             return redirect()->intended('/admin');
         }
         return back()->withInput($request->only('email', 'remember'));
+    }
+
+    public function adminhome()
+    {
+        $user_list = User::orderBy('id', 'asc')->paginate(20);
+        return view('auth.admin', [
+            'users' => $user_list,
+            'authgroup' => 'admin',
+        ]);
     }
 }

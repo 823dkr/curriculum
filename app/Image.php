@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Image extends Model
 {
     protected $fillable = [
-        'image_name',
-        'image_path',
+        'name',
+        'path',
     ];
+
     public function type()
     {
         return $this->belongsTo('App\Type');

@@ -68,8 +68,8 @@ section {
 body {
   margin: 0;
   font-family: "Nunito", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.6;
   color: #212529;
   text-align: left;
@@ -514,7 +514,7 @@ mark,
   background-color: #f8fafc;
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
-  max-width: 100%;
+  max-width: 100px;
   height: auto;
 }
 
@@ -10931,6 +10931,11 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+
+  .feeded{
+    color:orange;
+}
+ 
 }
 
 

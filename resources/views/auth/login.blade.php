@@ -1,14 +1,15 @@
 @extends('layout')
 @section('content')
+<br><br>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ isset($authgroup) ? ucwords($authgroup) : ""}}{{ __('ログイン') }}</div>
+                <div class="card-header">{{ isset($authgroup) ? "管理専用  " : ""}}{{ __('ログイン') }}</div>
 
                 <div class="card-body">
                     @isset($authgroup)
-                    <form method="POST" action="{{ url ('login/admin') }}">
+                    <form method="POST" action="{{ url('login/admin') }}">
                         @else
                         <form method="POST" action="{{ route('login') }}">
                             @endisset
@@ -50,21 +51,45 @@
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-8 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('ログイン') }}
-                                    </button>
-
-                                    @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('パスワードをお忘れの方') }}
-                                    </a>
-                                    @endif
-
-                                    <a class="btn btn-link" href="{{ route('register') }}">
-                                        {{ __('新規登録') }}
-                                    </a>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ __('ログイン') }}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="container">
+                                    <div class="col align-self-center">
+                                        @if (Route::has(isset($authgroup) ? $authgroup.'.password.request' : 'password.request'))
+                                        <div class="col">
+                                            <a class="btn btn-link" href="{{ route(isset($authgroup) ? $authgroup.'.password.request' : 'password.request') }}">
+                                                {{ __('パスワードをお忘れの方') }}
+                                            </a>
+                                            @endif
+                                        </div>
+                                        @isset($authgroup)
+                                        <div class="col">
+                                            <a class="btn btn-link" href="{{ url('register/admin') }}">
+                                                {{ __('新規登録') }}
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            @else
+                                            <a class="btn btn-link" href="{{ route('register') }}">
+                                                {{ __('新規登録') }}
+                                            </a>
+                                        </div>
+                                        @endisset
+
+                                        @isset($authgroup)
+                                        @else
+                                        <div class="col">
+                                            <a class="btn btn-link" href="{{ url('login/admin') }}">
+                                                {{ __('管理ユーザーはこちら') }}
+                                            </a>
+                                        </div>
+                                        @endisset
+                                    </div>
+                                </div>
                         </form>
                 </div>
             </div>

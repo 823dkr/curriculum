@@ -45,6 +45,7 @@ class SearchController extends Controller
                     'types' => $search_type,
                     'creatures' => $search_creature,
                     'sexes' => $all_sexes,
+                    'images' => $all_images,
                 ]
 
             );
