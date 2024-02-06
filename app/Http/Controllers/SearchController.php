@@ -12,6 +12,8 @@ use App\Creature;
 use App\Http\Requests\CreateData;
 use App\Image;
 use App\Sex;
+use Carbon\Carbon;
+use App\Feed;
 
 class SearchController extends Controller
 {
@@ -22,6 +24,7 @@ class SearchController extends Controller
      */
     public function index(Request $request)
     {
+
         $creatures = Auth::user()->creature()->get();
         $types = Auth::user()->type()->get();
         $images = Auth::user()->image()->get();
@@ -49,6 +52,28 @@ class SearchController extends Controller
                 ]
 
             );
+        } else {
+            $creatures = Auth::user()->creature()->get();
+            $types = Auth::user()->type()->get();
+            $images = Auth::user()->image()->get();
+            $sexes = new Sex;
+            $today = Carbon::today();
+            $user_id = Auth::user()->id;
+
+            $all_creature = $creatures->all();
+            $all_types = $types->all();
+            $all_sexes = $sexes->all();
+            $all_images = $images->all();
+            $feed = Feed::where('user_id', $user_id)->whereDate('created_at', $today)->get();
+
+            return view('creature.index', [
+                'creatures' => $all_creature,
+                'types' => $all_types,
+                'images' => $all_images,
+                'sexes' => $all_sexes,
+                'all_types' => $all_types,
+                'feed' => $feed,
+            ]);
         }
     }
 
