@@ -3,14 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\RequestsCreateData;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-use App\Type;
-use App\Creature;
-use App\Http\Requests\CreateData;
-use App\Image;
 use App\Sex;
 use Carbon\Carbon;
 use App\Feed;
@@ -71,7 +65,6 @@ class SearchController extends Controller
                 'types' => $all_types,
                 'images' => $all_images,
                 'sexes' => $all_sexes,
-                'all_types' => $all_types,
                 'feed' => $feed,
             ]);
         }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\RequestsCreateData;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -38,7 +37,6 @@ class MainController extends Controller
             'types' => $all_types,
             'images' => $all_images,
             'sexes' => $all_sexes,
-            'all_types' => $all_types,
             'feed' => $feed,
         ]);
     }

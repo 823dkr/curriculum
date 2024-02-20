@@ -19,7 +19,7 @@
 
                     <form class="d-inline" method="POST" action="<?php echo e(route('verification.resend')); ?>">
                         <?php echo csrf_field(); ?>
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline"><?php echo e(__('こちらをクリック')); ?></button>.
+                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline"><?php echo e(__('こちらをクリック')); ?></button>。
                     </form>
                 </div>
             </div>
